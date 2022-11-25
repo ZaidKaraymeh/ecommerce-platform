@@ -10,7 +10,7 @@ class Shop(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
     owner = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
-
+    
     name = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
@@ -22,13 +22,17 @@ class Shop(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     modified_at = models.DateTimeField(auto_now_add=False, auto_now=True)
 
+    def __str__(self):
+        return self.name
+    
+
 
 class Product(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
     owner = models.ForeignKey("users.CustomUser", on_delete=models.CASCADE)
-    shop = models.ForeignKey("api.Shop", on_delete=models.CASCADE)
+    shop = models.ForeignKey("api.Shop", on_delete=models.CASCADE, null=True)
 
     name = models.CharField(max_length=255)
     description = models.TextField(max_length=9000)
@@ -65,21 +69,26 @@ class Product(models.Model):
 
     """
 
-    users_ratings = models.ManyToManyField("api.UserRating", blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     modified_at = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    def __str__(self):
+        return self.name
+    
 
 
 class UserRating(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey('users.CustomUser', on_delete=models.CASCADE)
+    product = models.ForeignKey("api.Product", on_delete=models.CASCADE, null=True)
+    
     rating = models.IntegerField(
         validators=[
             MaxValueValidator(5),
             MinValueValidator(0)
         ])
+
 
     comment = models.TextField(max_length=500, null=True)
     created_at = models.DateTimeField(auto_now=False, auto_now_add=True)

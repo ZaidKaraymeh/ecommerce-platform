@@ -19,25 +19,26 @@ from django.urls import path, include
 from users.models import CustomUser
 from rest_framework import routers, serializers, viewsets
 
+from api.serializers import ShopSerializer
+from api.views import ShopViewSet, ProductViewSet, UserRatingViewSet, UserViewSet
+
 # Serializers define the API representation.
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['url', 'email', 'is_staff']
+
 
 # ViewSets define the view behavior.
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
+
 
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'users', UserViewSet)
+router.register(r'shops', ShopViewSet)
+router.register(r'products', ProductViewSet)
+router.register(r'ratings', UserRatingViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
